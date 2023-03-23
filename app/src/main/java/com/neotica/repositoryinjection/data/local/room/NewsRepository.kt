@@ -1,12 +1,10 @@
 package com.neotica.repositoryinjection.data.local.room
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.neotica.repositoryinjection.BuildConfig
 import com.neotica.repositoryinjection.data.local.entity.NewsEntity
 import com.neotica.repositoryinjection.data.remote.response.NewsResponse
-import com.neotica.repositoryinjection.data.remote.retrofit.ApiConfig
 import com.neotica.repositoryinjection.data.remote.retrofit.ApiService
 import com.neotica.repositoryinjection.utils.AppExecutors
 import retrofit2.Call
@@ -78,21 +76,5 @@ class NewsRepository private constructor(
             instance ?: synchronized(this) {
                 instance ?: NewsRepository(apiService, newsDao, appExecutors)
             }.also { instance = it }
-    }
-
-    //Step 7: Create object for Injection
-    object Injection {
-        //Step 7.1: Create a function that returns to NewsRepository
-        // with context as a parameter
-        fun provideRepository(context: Context): NewsRepository {
-            //Step 7.2: Create variable that contains Service, database, dao, and appExecutors
-            val apiService = ApiConfig.getApiService()
-            //Step 7.3: Provide context to database
-            val database = NewsDatabase.getInstance(context)
-            val dao = database.newsDao()
-            val appExecutors = AppExecutors()
-            //Step 7.4: Returns instances from apiService, dao, and appExecutors
-            return NewsRepository.getInstance(apiService, dao, appExecutors)
-        }
     }
 }

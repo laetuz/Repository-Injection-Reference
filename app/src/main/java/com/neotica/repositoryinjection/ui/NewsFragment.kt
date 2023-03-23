@@ -17,7 +17,11 @@ class NewsFragment : Fragment() {
     private var _binding: FragmentNewsBinding? = null
     private val binding get() = _binding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         _binding = FragmentNewsBinding.inflate(layoutInflater, container, false)
         return binding?.root
     }
@@ -31,7 +35,7 @@ class NewsFragment : Fragment() {
         val viewModel: NewsViewModel by viewModels { factory }
 
         val newsAdapter = NewsAdapter()
-        
+
         binding?.rvNews?.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
@@ -40,8 +44,7 @@ class NewsFragment : Fragment() {
 
         //Step 12: Create condition for the tab
         if (tabName == TAB_NEWS) {
-            viewModel.getHeadlineNews().observe(viewLifecycleOwner) {
-                result ->
+            viewModel.getHeadlineNews().observe(viewLifecycleOwner) { result ->
                 if (result != null) {
                     when (result) {
                         is com.neotica.repositoryinjection.data.Result.Loading -> {
@@ -50,21 +53,24 @@ class NewsFragment : Fragment() {
                         is com.neotica.repositoryinjection.data.Result.Success -> {
                             binding?.progressBar?.visibility = View.GONE
                             val newsData = result.data
+                            newsAdapter.submitList(newsData)
                         }
                         is com.neotica.repositoryinjection.data.Result.Error -> {
                             binding?.progressBar?.visibility = View.GONE
-                            Toast.makeText(context,
+                            Toast.makeText(
+                                context,
                                 "Terjadi Kesalahan" + result.error,
-                                Toast.LENGTH_SHORT).show()
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
                 }
-                binding?.rvNews?.apply {
-                    layoutManager = LinearLayoutManager(context)
-                    setHasFixedSize(true)
-                    adapter = newsAdapter
-                }
             }
+        }
+        binding?.rvNews?.apply {
+            layoutManager = LinearLayoutManager(context)
+            setHasFixedSize(true)
+            adapter = newsAdapter
         }
     }
 

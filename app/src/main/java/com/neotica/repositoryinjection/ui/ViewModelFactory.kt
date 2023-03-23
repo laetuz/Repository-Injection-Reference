@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.neotica.repositoryinjection.data.local.room.NewsRepository
+import com.neotica.repositoryinjection.di.Injection
 
 //Step 9: Create ViewModelFactory class
 //Step 9.1: Create a private constructor parameter to NewsRepository
@@ -29,7 +30,7 @@ class ViewModelFactory private constructor(private val newsRepository: NewsRepos
         //Step 10.2 Create a new function that returns to this class
         fun getInstance(context: Context): ViewModelFactory =
             instance ?: synchronized(this) {
-                instance ?: ViewModelFactory(NewsRepository.Injection.provideRepository(context))
+                instance ?: ViewModelFactory(Injection.provideRepository(context))
             }.also { instance = it }
     }
 }
