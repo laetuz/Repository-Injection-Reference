@@ -31,11 +31,14 @@ class NewsFragment : Fragment() {
         tabName = arguments?.getString(ARG_TAB)
 
         //Step 11: Initialize ViewModel.
+        //Step 11.1: Delegate viewModels factory by viewModels.
         val factory: ViewModelFactory = ViewModelFactory.getInstance(requireContext())
         val viewModel: NewsViewModel by viewModels { factory }
 
+        //Step 11.2: Define NewsAdapter class
         val newsAdapter = NewsAdapter()
 
+        //Step 11.3: Initialize recyclerView
         binding?.rvNews?.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
@@ -44,7 +47,9 @@ class NewsFragment : Fragment() {
 
         //Step 12: Create condition for the tab
         if (tabName == TAB_NEWS) {
+            //Step 12.1: Observe geHeadLineNews via viewModel observer with viewLifecycleOwner as context
             viewModel.getHeadlineNews().observe(viewLifecycleOwner) { result ->
+                //Step 12.2: Create condition for when result isnt null
                 if (result != null) {
                     when (result) {
                         is com.neotica.repositoryinjection.data.Result.Loading -> {

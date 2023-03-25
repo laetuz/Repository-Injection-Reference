@@ -16,6 +16,7 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //Step 6.1: Define PagerAdapter
         val sectionsPagerAdapter = SectionsPagerAdapter(this)
         binding.viewPager.adapter = sectionsPagerAdapter
         TabLayoutMediator(
