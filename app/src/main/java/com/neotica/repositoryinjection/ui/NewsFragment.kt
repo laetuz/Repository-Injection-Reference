@@ -30,26 +30,23 @@ class NewsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         tabName = arguments?.getString(ARG_TAB)
 
-        //Step 11: Initialize ViewModel.
-        //Step 11.1: Delegate viewModels factory by viewModels.
         val factory: ViewModelFactory = ViewModelFactory.getInstance(requireContext())
         val viewModel: NewsViewModel by viewModels { factory }
 
-        //Step 11.2: Define NewsAdapter class
-        val newsAdapter = NewsAdapter()
+        //Step 17: Add parameter for Adapter and passes the lambda condition
+        val newsAdapter = NewsAdapter {
+            if (it.isBookmarked){viewModel.deleteNews(it)}
+            else {viewModel.saveNews(it)}
+        }
 
-        //Step 11.3: Initialize recyclerView
         binding?.rvNews?.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
             adapter = newsAdapter
         }
 
-        //Step 12: Create condition for the tab
         if (tabName == TAB_NEWS) {
-            //Step 12.1: Observe geHeadLineNews via viewModel observer with viewLifecycleOwner as context
             viewModel.getHeadlineNews().observe(viewLifecycleOwner) { result ->
-                //Step 12.2: Create condition for when result isnt null
                 if (result != null) {
                     when (result) {
                         is com.neotica.repositoryinjection.data.Result.Loading -> {
@@ -70,6 +67,13 @@ class NewsFragment : Fragment() {
                         }
                     }
                 }
+            }
+        }
+        //Step 18: Add condition to bookmark tab
+        else if (tabName == TAB_BOOKMARK){
+            viewModel.getBookmarkedNews().observe(viewLifecycleOwner) { bookmarkedNews ->
+                binding?.progressBar?.visibility = View.GONE
+                newsAdapter.submitList(bookmarkedNews)
             }
         }
         binding?.rvNews?.apply {

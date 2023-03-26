@@ -59,6 +59,17 @@ class NewsRepository private constructor(
         return result
     }
 
+    //Step 13: Create new function to set and get bookmarks
+    fun getBookmarkedNews(): LiveData<List<NewsEntity>> {
+        return newsDao.getBookmarkedNews()
+    }
+    fun setBookmarkedNews(news: NewsEntity, bookmarkState: Boolean) {
+        appExecutors.diskIO.execute {
+            news.isBookmarked = bookmarkState
+            newsDao.updateNews(news)
+        }
+    }
+
     //Step 6: Create a companion object containing instance of NewsRepository
     companion object {
         //Step 6.1 Create @Volatile annotation
